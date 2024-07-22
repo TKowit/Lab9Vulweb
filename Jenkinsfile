@@ -3,16 +3,16 @@ pipeline {
     stages {
         stage ('Checkout') {
             steps {
-                git branch:'master', url: 'https://github.com/OWASP/Vulnerable-Web-Application.git'
+                git branch: 'master', url: 'https://github.com/OWASP/Vulnerable-Web-Application.git'
             }
         }
 
         stage('Code Quality Check via SonarQube') {
             steps {
                 script {
-                def scannerHome = tool 'SonarQube';
+                    def scannerHome = tool 'SonarQube'
                     withSonarQubeEnv('SonarQube') {
-                    sh "/var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQube/bin/sonar-scanner -Dsonar.projectKey=OWASP -Dsonar.sources=. -Dsonar.host.url=http://192.168.1.8:9000 -Dsonar.token=sqp_8756ac3da5280ef6f9ab332e65adafaefd9d8ebd"
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP -Dsonar.sources=. -Dsonar.host.url=http://192.168.1.8:9000 -Dsonar.token=sqp_8756ac3da5280ef6f9ab332e65adafaefd9d8ebd"
                     }
                 }
             }
@@ -20,7 +20,7 @@ pipeline {
     }
     post {
         always {
-            recordIssues enabledForFailure: true, tool: sonarQube()
+            recordIssues enabledForFailure: true, tools: [sonarQube()]
         }
     }
 }
